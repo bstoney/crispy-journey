@@ -10,3 +10,10 @@ application {
         compileTask.get().compilerArgs.add("-std=c++20")
     }
 }
+
+tasks {
+    register<Exec>("runApp") {
+        workingDir(rootProject.projectDir)
+        commandLine(projectDir.path + "/build/exe/main/debug/" + rootProject.name)
+    }
+}

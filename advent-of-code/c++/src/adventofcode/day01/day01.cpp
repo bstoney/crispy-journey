@@ -18,11 +18,11 @@ public:
     }
 
     int part2(std::vector<std::string> data) {
-        return 1;
+        return data.size();
     }
 
     void solve() {
-        super::solve(1);
+        super::solve(1, 1, 1);
     }
 };
 

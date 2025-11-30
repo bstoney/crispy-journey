@@ -11,7 +11,12 @@ class AdventOfCodeSolution {
 public:
     virtual TPart1 part1(std::vector<std::string> data) = 0;
     virtual TPart2 part2(std::vector<std::string> data) = 0;
-    void solve(int day);
+    void solve(int day, TPart1 expectedPart1Test, TPart2 expectedPart2Test);
+
+    template<typename... TArgs>
+    void log(TArgs... args) {
+        utils::log(args...);
+    }
 };
 
 #endif // AOC_SOLUTION_HPP

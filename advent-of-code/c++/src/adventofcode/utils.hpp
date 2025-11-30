@@ -5,14 +5,16 @@
 #include <vector>
 #include <iostream>
 
-std::vector<std::string> readInput(std::string name);
+namespace utils {
+    std::vector<std::string> readInput(std::string name);
 
-void log();
+    void log();
 
-template<typename T, typename... TArgs>
-void log(T value, TArgs... args) {
-    std::cout << value;
-    log(args...);
+    template<typename T, typename... TArgs>
+    void log(T value, TArgs... args) {
+        std::cout << value;
+        log(args...);
+    }
 }
 
 #endif // AOC_UTILS_HPP
