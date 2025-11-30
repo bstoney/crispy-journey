@@ -5,3 +5,6 @@ def readInput(name):
     with open(filename, 'r') as f:
         lines = f.read().splitlines()
     return lines
+
+def log(*args):
+    print(args)

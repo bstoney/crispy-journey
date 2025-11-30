@@ -1,8 +1,9 @@
-import sys
-
 from src.adventofcode.advent_of_code_solution import AdventOfCodeSolution
 
 class Day01(AdventOfCodeSolution):
+    def __init__(self):
+        super().__init__()
+
     def solve(self, *args):
         return super().solve(1)
 
