@@ -1,10 +1,13 @@
 #include "utils.hpp"
+#include "app.hpp"
 
 #include <fstream>
 
 namespace utils {
     std::vector<std::string> readInput(std::string name) {
         std::string filename = "input/" + name + ".txt";
+        debug("Reading file: ", filename);
+
         std::vector<std::string> lines;
         std::ifstream inputFile(filename);
 

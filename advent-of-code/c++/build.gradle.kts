@@ -4,6 +4,7 @@ plugins {
 }
 
 application {
+    baseName = "advent-of-code"
     targetMachines.add(machines.linux.x86_64)
     source.setFrom("src")
     binaries.configureEach {
@@ -13,7 +14,8 @@ application {
 
 tasks {
     register<Exec>("runApp") {
+        dependsOn("build")
         workingDir(rootProject.projectDir)
-        commandLine(projectDir.path + "/build/exe/main/debug/" + rootProject.name)
+        commandLine(projectDir.path + "/build/exe/main/debug/" + application.baseName.get())
     }
 }
