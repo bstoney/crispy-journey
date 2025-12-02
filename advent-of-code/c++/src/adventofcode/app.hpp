@@ -2,6 +2,6 @@
 #define AOC_APP_HPP
 
 // Uncomment for debug logs
-//#define AOC_DEBUG
+#define AOC_DEBUG
 
 #endif

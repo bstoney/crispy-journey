@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "utils.hpp"
 
@@ -17,6 +18,11 @@ public:
     void log(TArgs... args) {
         utils::log(args...);
     }
+private:
+    void checkPart(std::function<std::string()> puzzleInput,
+                   std::function<auto(std::vector<std::string> data)> puzzlePart,
+                   auto expectedTest);
+    void check(bool test, std::string message);
 };
 
 #endif // AOC_SOLUTION_HPP

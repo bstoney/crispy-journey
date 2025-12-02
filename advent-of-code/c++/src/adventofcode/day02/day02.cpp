@@ -3,17 +3,12 @@
 
 #include "../advent_of_code_solution.hpp"
 
-class Day01 : public AdventOfCodeSolution<int, int> {
+class Day02 : public AdventOfCodeSolution<int, int> {
 private:
     typedef AdventOfCodeSolution<int, int> super;
 public:
-    Day01() {
-    }
-
-    ~Day01() {
-    }
-
     int part1(std::vector<std::string> data) {
+        
         return data.size();
     }
 
@@ -22,6 +17,6 @@ public:
     }
 
     void solve() {
-        super::solve(1, 1, 1);
+        super::solve(2, 1227775554, 0);
     }
 };
