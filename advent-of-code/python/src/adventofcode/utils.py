@@ -1,5 +1,7 @@
 import sys
 
+DEBUG = False
+
 def readInput(name):
     filename = "input/" + name + ".txt"
     with open(filename, 'r') as f:
@@ -7,4 +9,9 @@ def readInput(name):
     return lines
 
 def log(*args):
-    print(args)
+    print(*args)
+
+def debug(*args):
+    if DEBUG:
+        print(*args)
+
