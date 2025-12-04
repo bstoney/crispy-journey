@@ -13,6 +13,6 @@ tasks {
     register<Exec>("runPythonScript") {
         workingDir(rootProject.projectDir)
         environment("PYTHONPATH", projectDir.path)
-        commandLine("python", projectDir.path + "/src/adventofcode/day01/day01.py")
+        commandLine("python", projectDir.path + "/src/adventofcode/app.py")
     }
 }

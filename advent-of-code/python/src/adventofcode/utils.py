@@ -1,6 +1,6 @@
 import sys
 
-DEBUG = False
+DEBUG = True
 
 def readInput(name):
     filename = "input/" + name + ".txt"

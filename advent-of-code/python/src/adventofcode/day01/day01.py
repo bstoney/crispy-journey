@@ -51,6 +51,3 @@ class Day01(AdventOfCodeSolution):
 
     def solve(self, *args):
         return super().solve(1, 3, 6)
-
-if __name__ == "__main__":
-    Day01().solve()
