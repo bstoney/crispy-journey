@@ -22,7 +22,7 @@ void AdventOfCodeSolution<TPart1, TPart2>::solve(int day, TPart1 expectedPart1Te
     this->check(part == expectedPart1Test, std::format("solution was {}, expected {}", part, expectedPart1Test));
 
     std::vector<std::string> input = utils::readInput(adventOfCodePuzzle->inputFile());
-    this->log("result: {}", this->part1(input));
+    this->log("result: ", this->part1(input));
 }
 
 template <typename TPart1, typename TPart2>
@@ -43,3 +43,4 @@ void AdventOfCodeSolution<TPart1, TPart2>::check(bool test, std::string message)
 }
 
 template class AdventOfCodeSolution<int, int>;
+template class AdventOfCodeSolution<long, long>;

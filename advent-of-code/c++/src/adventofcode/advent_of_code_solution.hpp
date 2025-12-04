@@ -18,6 +18,11 @@ public:
     void log(TArgs... args) {
         utils::log(args...);
     }
+
+    template<typename... TArgs>
+    void debug(TArgs... args) {
+        utils::debug(args...);
+    }
 private:
     void checkPart(std::function<std::string()> puzzleInput,
                    std::function<auto(std::vector<std::string> data)> puzzlePart,

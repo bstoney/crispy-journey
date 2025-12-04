@@ -24,6 +24,14 @@ namespace utils {
         log(args...);
         #endif
     }
+
+    std::string trim(const std::string& str);
+
+    std::string join(std::string seperator, std::vector<std::string> strings);
+
+    std::string join(std::vector<std::string> strings);
+
+    std::vector<std::string> split(std::string seperator, std::string value);
 }
 
 #endif // AOC_UTILS_HPP
