@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <utility>
+#include <algorithm>
 
 #include "../utils.hpp"
 
@@ -19,19 +21,54 @@
 #define CENTER +0
 #define BOTTOM +1
 
+using namespace std;
+
 class Day04 : public AdventOfCodeSolution<int, int> {
 private:
     typedef AdventOfCodeSolution<int, int> super;
 public:
-    int part1(std::vector<std::string> data) {
-        int movableRolls = 0;
+    int part1(vector<string> data) {
+        auto movableRolls = this->getMoveableRolls(data);
+
+        return movableRolls.size();
+    }
+
+    int part2(vector<string> data) {
+        int totalRollsMoved = 0;
+        int iterations = 0;
+        vector<pair<int,int>> movableRolls = {};
+        do {
+            iterations++;
+            if(iterations % 10 == 0) {
+                this->debug("Iteration: ", iterations);
+            }
+
+            // Move
+            for (auto [x,y] : movableRolls) {
+                data[y][x] = '.';
+            }
+            totalRollsMoved += movableRolls.size();
+
+            movableRolls = this->getMoveableRolls(data);
+        } while(movableRolls.size() > 0);
+
+        return totalRollsMoved;
+    }
+
+    void solve() {
+        super::solve(4, 13, 43);
+    }
+
+private:
+    vector<pair<int,int>> getMoveableRolls(vector<string> data) {
+        vector<pair<int,int>> movableRolls = {};
         for (int y = 0; y < data.size(); y++) {
             for (int x = 0; x < data[y].size(); x++) {
                 if(this->isRoll(x, y, data)) {
                     int rollCount = this->countRolls(x, y, data);
-                    this->debug(x, ",", y, " -> ", rollCount);
+                    // this->debug(x, ",", y, " -> ", rollCount);
                     if(rollCount < 4) {
-                        movableRolls++;
+                        movableRolls.push_back({x, y});
                     }
                 }
             }
@@ -39,28 +76,22 @@ public:
 
         return movableRolls;
     }
+    int countRolls(int x, int y, vector<string> data) {
+        auto adjacent = {
+            this->isRoll(x LEFT, y TOP, data),
+            this->isRoll(x CENTER, y TOP, data),
+            this->isRoll(x RIGHT, y TOP, data),
+            this->isRoll(x RIGHT, y MIDDLE, data),
+            this->isRoll(x RIGHT, y BOTTOM, data),
+            this->isRoll(x CENTER, y BOTTOM, data),
+            this->isRoll(x LEFT, y BOTTOM, data),
+            this->isRoll(x LEFT, y MIDDLE, data),
+        };
 
-    int part2(std::vector<std::string> data) {
-        return 0;
+        return count(adjacent.begin(), adjacent.end(), true);
     }
 
-    void solve() {
-        super::solve(4, 13, 0);
-    }
-
-private:
-    int countRolls(int x, int y, std::vector<std::string> data) {
-        return (this->isRoll(x LEFT, y TOP, data) ? 1 : 0) +
-                (this->isRoll(x CENTER, y TOP, data) ? 1 : 0) +
-                (this->isRoll(x RIGHT, y TOP, data) ? 1 : 0) +
-                (this->isRoll(x RIGHT, y MIDDLE, data) ? 1 : 0) +
-                (this->isRoll(x RIGHT, y BOTTOM, data) ? 1 : 0) +
-                (this->isRoll(x CENTER, y BOTTOM, data) ? 1 : 0) +
-                (this->isRoll(x LEFT, y BOTTOM, data) ? 1 : 0) +
-                (this->isRoll(x LEFT, y MIDDLE, data) ? 1 : 0);
-    }
-
-    bool isRoll(int x, int y, std::vector<std::string> data) {
+    bool isRoll(int x, int y, vector<string> data) {
         if ( x < 0 || y < 0 || y >= data.size() || x >= data[y].size()) {
             return false;
         }

@@ -46,6 +46,7 @@ void AdventOfCodeSolution<TPart1, TPart2>::checkPart(std::function<std::string()
 template <typename TPart1, typename TPart2>
 void AdventOfCodeSolution<TPart1, TPart2>::check(bool test, std::string message) {
     if(!test) {
+        this->log(message);
         throw std::runtime_error(message);
     }
 }
