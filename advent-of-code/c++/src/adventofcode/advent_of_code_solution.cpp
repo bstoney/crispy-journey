@@ -17,12 +17,20 @@ void AdventOfCodeSolution<TPart1, TPart2>::solve(int day, TPart1 expectedPart1Te
 //        }, expectedPart1Test);
 
     std::vector<std::string>testInput = utils::readInput(adventOfCodePuzzle->part1TestFile());
-    auto part = this->part1(testInput);
-    this->log(std::format("test: {}", part));
-    this->check(part == expectedPart1Test, std::format("solution was {}, expected {}", part, expectedPart1Test));
+    auto testPart = this->part1(testInput);
+    this->log(std::format("test: {}", testPart));
+    this->check(testPart == expectedPart1Test, std::format("solution was {}, expected {}", testPart, expectedPart1Test));
 
     std::vector<std::string> input = utils::readInput(adventOfCodePuzzle->inputFile());
     this->log("result: ", this->part1(input));
+
+    this->log("Part 2");
+    std::vector<std::string>testInputPart2 = utils::readInput(adventOfCodePuzzle->part2TestFile());
+    auto testPart2 = this->part2(testInputPart2);
+    this->log(std::format("test: {}", testPart2));
+    this->check(testPart2 == expectedPart2Test, std::format("solution was {}, expected {}", testPart2, expectedPart2Test));
+
+    this->log("result: ", this->part2(input));
 }
 
 template <typename TPart1, typename TPart2>

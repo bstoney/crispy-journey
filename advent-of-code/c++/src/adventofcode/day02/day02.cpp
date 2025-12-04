@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "../utils.hpp"
 
@@ -10,6 +11,54 @@ private:
     typedef AdventOfCodeSolution<long, long> super;
 public:
     long part1(std::vector<std::string> data) {
+        auto isInvalid = [](long id) {
+            std::string idStr = std::to_string(id);
+            if (idStr.size() % 2 == 0) {
+                int halfSize = idStr.size() / 2;
+                if (idStr.compare(0, halfSize, idStr, halfSize, halfSize) == 0) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        return this->getSumOfInvalid(data, isInvalid);
+    }
+
+    long part2(std::vector<std::string> data) {
+        auto isInvalid = [](long id) {
+            std::string idStr = std::to_string(id);
+            int halfSize = idStr.size() / 2;
+            for (int chunkSize = 1; chunkSize <= halfSize; chunkSize++) {
+                if (idStr.size() % chunkSize == 0) {
+                    int chunkCount = idStr.size() / chunkSize;
+                    bool allChunksMatch = true;
+                    for (int i = 1; i < chunkCount; i++) {
+                        if (idStr.compare(0, chunkSize, idStr, chunkSize * i, chunkSize) != 0) {
+                            allChunksMatch = false;
+                            break;
+                        }
+                    }
+
+                    if (allChunksMatch) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        };
+
+        return this->getSumOfInvalid(data, isInvalid);
+    }
+
+    void solve() {
+        super::solve(2, 1227775554, 4174379265);
+    }
+
+private:
+    long getSumOfInvalid(std::vector<std::string> data, std::function<bool(long)> isInvalid) {
         std::string input = utils::join(std::string(""), data);
         this->log(input);
 
@@ -21,27 +70,13 @@ public:
             long start = std::stol(idRange[0]);
             long end = std::stol(idRange[1]);
             for (long i = start; i <= end; i++) {
-                std::string id = std::to_string(i);
-                if (id.size() % 2 == 0) {
-                    int halfSize = id.size() / 2;
-                    if (id.compare(0, halfSize, id, halfSize, halfSize) == 0) {
-                        this->debug("Found invalid id: ", id);
-                        sum += i;
-                    }
+                if(isInvalid(i)) {
+                    this->debug("Found invalid id: ", i);
+                    sum += i;
                 }
             }
         }
 
         return sum;
     }
-
-    long part2(std::vector<std::string> data) {
-        return data.size();
-    }
-
-    void solve() {
-        super::solve(2, 1227775554, 0);
-    }
-
-private:
 };
