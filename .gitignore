@@ -2,6 +2,6 @@
 .idea
 .kotlin/
 build
-src/**/*.txt
 local.properties
 input/**/*
+**/__pycache__/**
