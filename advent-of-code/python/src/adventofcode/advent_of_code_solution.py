@@ -33,6 +33,7 @@ class AdventOfCodeSolution:
 
     def check(self, test, message):
         if not test:
+            log(message)
             raise ValueError(message)
 
 
