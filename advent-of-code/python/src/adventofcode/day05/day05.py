@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Self, Any
 
 from src.adventofcode.advent_of_code_solution import AdventOfCodeSolution
 from src.adventofcode.utils import debug
@@ -7,6 +8,37 @@ from src.adventofcode.utils import debug
 class ReadMode(Enum):
     FRESH_INGREDIENTS = 1
     INGREDIENT_IDS = 2
+
+
+class IdRange:
+    def __init__(self, id_range: tuple[Any, Any] | str):
+        if isinstance(id_range, str):
+            range_start, range_end = id_range.split("-")
+        else:
+            range_start, range_end = id_range
+        self.start = int(range_start)
+        self.end = int(range_end)
+
+    def id_count(self):
+        return self.end - self.start + 1
+
+    def joins_to_end(self, other: Self):
+        """True if other can be joined to the start of this"""
+        return self.start <= other.start and self.end >= other.start - 1
+
+    def is_valid(self):
+        return self.start <= self.end
+
+    def extend_to(self, other: Self):
+        """Extends the range to cover from the min start to max end without any verification of intersection"""
+        self.start = min(self.start, other.start)
+        self.end = max(self.end, other.end)
+
+    def __str__(self):
+        return f"r[{self.start:,}-{self.end:,}]"
+
+    def details(self):
+        return f"{self} -> {self.id_count():,} {[*range(self.start, min(self.end + 1, self.start + 20))]}"
 
 
 class Day05(AdventOfCodeSolution):
@@ -18,8 +50,8 @@ class Day05(AdventOfCodeSolution):
 
         fresh_ingredient_ids = set()
         for ingredient_id in ingredient_ids:
-            for (range_start, range_end) in fresh_ingredient_id_ranges:
-                if range_start <= ingredient_id <= range_end:
+            for id_range in fresh_ingredient_id_ranges:
+                if id_range.start <= ingredient_id <= id_range.end:
                     fresh_ingredient_ids.add(ingredient_id)
 
         return len(fresh_ingredient_ids)
@@ -28,86 +60,69 @@ class Day05(AdventOfCodeSolution):
         fresh_ingredient_id_ranges, ingredient_ids = self.parse_inputs(data)
 
         fresh_ingredient_ids = 0
-        for (range_start, range_end) in fresh_ingredient_id_ranges:
-            debug(
-                f"{range_start} - {range_end} -> {range_end - range_start + 1} {[*range(range_start, min(range_end + 1, range_start + 20))]}")
-            fresh_ingredient_ids += range_end - range_start + 1
+        for id_range in fresh_ingredient_id_ranges:
+            debug(id_range.details())
+            fresh_ingredient_ids += id_range.id_count()
 
         return fresh_ingredient_ids
 
-    def parse_inputs(self, data) -> tuple[list[tuple[int, int]], set[int]]:
+    def parse_inputs(self, data: list[str]) -> tuple[list[IdRange], set[int]]:
         fresh_ingredient_id_ranges = []
         ingredient_ids = set()
 
         read_mode = ReadMode.FRESH_INGREDIENTS
-        for input in data:
-            if input == "":
+        for data_item in data:
+            if data_item == "":
                 read_mode = ReadMode.INGREDIENT_IDS
                 continue
             if read_mode == ReadMode.FRESH_INGREDIENTS:
-                range_start, range_end = input.split("-")
-                fresh_ingredient_id_ranges = self.add_range(fresh_ingredient_id_ranges, int(range_start),
-                                                            int(range_end))
+                id_range = IdRange(data_item)
+                fresh_ingredient_id_ranges = Day05.add_range(fresh_ingredient_id_ranges, id_range)
             elif read_mode == ReadMode.INGREDIENT_IDS:
-                ingredient_ids.add(int(input))
+                ingredient_ids.add(int(data_item))
 
         debug("Fresh id ranges: ", len(fresh_ingredient_id_ranges))
         debug("Ingredients ids: ", len(ingredient_ids))
 
-        return fresh_ingredient_id_ranges, ingredient_ids
+        compacted_fresh_ingredient_id_ranges = Day05.compact(fresh_ingredient_id_ranges)
+
+        debug("Fresh id ranges: ", len(compacted_fresh_ingredient_id_ranges))
+
+        return compacted_fresh_ingredient_id_ranges, ingredient_ids
 
     def solve(self, *args):
         return super().solve(5, 3, 14)
 
-    def add_range(self, id_ranges, new_range_start, new_range_end):
-        """Adds or updated the ranges to produce an order list of discrete ranges"""
+    @staticmethod
+    def add_range(id_ranges: list[IdRange], new_range: IdRange) -> list[IdRange]:
+        """Adds or updated the ranges to produce an order list of ranges"""
 
-        # Noop on invalid range
-        if new_range_start > new_range_end:
-            debug(f"Skipping invalid range: {new_range_start}:{new_range_end}")
+        if not new_range.is_valid():
+            # Noop on invalid range
+            debug(f"Skipping invalid range: {new_range}")
             return id_ranges
 
-        new_range_index = None
         for index, id_range in enumerate(id_ranges):
-            id_range_start, id_range_end = id_range
-            if new_range_end < id_range_start:
-                # New range completely before id range
-                new_range_index = index - 1
-                break
-            elif id_range_end < new_range_start:
-                # New range completely after id range
+            if new_range.start > id_range.start:
+                # Keep searching if new range is greater
                 continue
             else:
-                # New range has some overlap
-                new_range_index = index
-                break
+                debug(f"New range {new_range} inserted at {index}")
+                id_ranges.insert(index, new_range)
+                return id_ranges
 
-        if new_range_index is None:
-            debug(f"New range is after last id range: {new_range_start}:{new_range_end}")
-            id_ranges.append([new_range_start, new_range_end])
-        elif new_range_index < 0:
-            debug(f"New range is before first id range: {new_range_start}:{new_range_end}")
-            id_ranges.insert(-1, [new_range_start, new_range_end])
-        else:
-            id_range_start, id_range_end = id_ranges[new_range_index]
-            if id_range_start <= new_range_start and new_range_end <= id_range_end:
-                debug(f"No change to {new_range_index} [{id_range_start}<{new_range_start}:{new_range_end}>{id_range_end}]")
-            else:
-                debug(
-                    f"New range overlaps with existing id range: {new_range_start}:{new_range_end} -> {id_ranges[new_range_index]}")
-                updated_range_start = min(id_range_start, new_range_start)
-                updated_range_end = max(id_range_end, new_range_end)
-
-                # Compact if overlapping
-                if new_range_index + 1 < len(id_ranges):
-                    next_range_start, next_range_end = id_ranges[new_range_index + 1]
-                    if updated_range_end >= next_range_start:
-                        debug(f"    Compacting new range overlaps with new range: {updated_range_end} -> {id_ranges[new_range_index + 1]}")
-                        del id_ranges[new_range_index + 1]
-                        updated_range_end = max(updated_range_end, next_range_end)
-
-                debug(f"    Updating range: {new_range_index} -> {[updated_range_start, updated_range_end]}")
-
-                id_ranges[new_range_index] = [updated_range_start, updated_range_end]
-
+        debug(f"New range {new_range} appended at {len(id_ranges)}")
+        id_ranges.append(new_range)
         return id_ranges
+
+    @staticmethod
+    def compact(id_ranges: list[IdRange]) -> list[IdRange]:
+        """Compacts an order list of ranges so there is no overlap"""
+        compacted_id_ranges = [id_ranges[0]]
+        for index, id_range in enumerate(id_ranges[1:]):
+            if compacted_id_ranges[-1].joins_to_end(id_range):
+                compacted_id_ranges[-1].extend_to(id_range)
+            else:
+                compacted_id_ranges.append(id_range)
+
+        return compacted_id_ranges
