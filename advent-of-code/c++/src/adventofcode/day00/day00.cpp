@@ -3,25 +3,19 @@
 
 #include "../advent_of_code_solution.hpp"
 
-class Day01 : public AdventOfCodeSolution<int, int> {
+class Day00 : public AdventOfCodeSolution<int, int> {
 private:
     typedef AdventOfCodeSolution<int, int> super;
 public:
-    Day01() {
-    }
-
-    ~Day01() {
-    }
-
     int part1(std::vector<std::string> data) {
-        return data.size();
+        return 0;
     }
 
     int part2(std::vector<std::string> data) {
-        return data.size();
+        return 0;
     }
 
     void solve() {
-        super::solve(1, 1, 1);
+        super::solve(0, 0, 0);
     }
 };

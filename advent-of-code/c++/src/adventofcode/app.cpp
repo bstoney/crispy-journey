@@ -2,13 +2,14 @@
 
 #include <iostream>
 
-#include "day01/day01.cpp"
+#include "day00/day00.cpp"
 #include "day02/day02.cpp"
 #include "day04/day04.cpp"
+#include "day06/day06.cpp"
 
 int main() {
     try {
-        Day04 day;
+        Day06 day;
         day.solve();
     } catch(const std::runtime_error& e) {
         std::cerr << "Caught an error: " << e.what() << std::endl;
